@@ -1,42 +1,54 @@
-import React, { Component, useState } from "react";
-import '../styles/App.css';
+// src/App.js
+import React, { Component } from "react";
+import "./styles.css";
 
 class App extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            renderBall: false,
-            posi : 0,
-            ballPosition: { left: "0px" }
-        };
-        this.renderChoice = this.renderBallOrButton.bind(this)
-        this.buttonClickHandler = this.buttonClickHandler.bind(this)
+  constructor(props) {
+    super(props);
+    this.state = {
+      showBall: false,
+      position: 0, // Ball starts at left = 0px
     };
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.buttonClickHandler = this.buttonClickHandler.bind(this);
+  }
 
-    buttonClickHandler() {
-   
-   }
-    renderBallOrButton() {
-		if (this.state.renderBall) {
-		    return <div className="ball" style={this.state.ballPosition}></div>
-		} else {
-		    return <button onClick={this.buttonClickHandler} >Start</button>
-		}
-    }
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
 
-    // bind ArrowRight keydown event
-    componentDidMount() {
-      
-    }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
 
-    render() {
-        return (
-            <div className="playground">
-                {this.renderBallOrButton()}
-            </div>
-        )
+  handleKeyDown(event) {
+    if (event.keyCode === 39 && this.state.showBall) {
+      this.setState((prevState) => ({
+        position: prevState.position + 5,
+      }));
     }
+  }
+
+  buttonClickHandler() {
+    this.setState({ showBall: true });
+  }
+
+  render() {
+    return (
+      <div className="playground">
+        {this.state.showBall ? (
+          <div
+            className="ball"
+            style={{ left: `${this.state.position}px`, position: "absolute" }}
+          ></div>
+        ) : (
+          <button className="start" onClick={this.buttonClickHandler}>
+            Start
+          </button>
+        )}
+      </div>
+    );
+  }
 }
-
 
 export default App;
